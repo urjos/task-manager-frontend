@@ -7,7 +7,8 @@ export default function App() {
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTc5NTczODQ5MiwiZXhwIjoxNzk1NzQyMDkyfQ.TrvEjRX6IhXHLI5c7A_V9cLeoqxc_2tPQdKVE_0x9MM";
 
   useEffect(() => {
     fetch(API, { headers: { Authorization: `Bearer ${token}` } })
@@ -25,7 +26,10 @@ export default function App() {
     if (!title.trim()) return;
     const res = await fetch(API, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ title }),
     });
     if (!res.ok) return setError("No se pudo crear la tarea");
@@ -37,7 +41,10 @@ export default function App() {
   async function toggle(task) {
     const res = await fetch(`${API}/${task.id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ done: !task.done }),
     });
     if (res.ok) {
@@ -48,7 +55,12 @@ export default function App() {
   }
 
   async function remove(id) {
-    const res = await fetch(`${API}/${id}`, { method: "DELETE" });
+    const res = await fetch(`${API}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (res.ok) setTasks((prev) => prev.filter((t) => t.id !== id));
   }
 
